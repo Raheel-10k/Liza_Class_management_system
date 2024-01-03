@@ -1,6 +1,6 @@
 from Class_managment.student_management import StudentManagement
 from Class_managment.attendance_management import AttendanceManagement
-from Class_managment.academic_reprt import AcademicReport
+from Class_managment.academic_report import AcademicReport
 from Class_managment.course_management import CourseManagement
 from Class_managment.lisa import LoginSystem
 
@@ -49,8 +49,9 @@ if __name__ == "__main__":
             student_name = input("Enter the student name to calculate overall attendance: ")
             attendance_manager.calculate_attendance(student_name)
         elif choice == "6":
-            # Implement attendance till current date logic
-            pass
+            student_name = input("Enter the student name to calculate attendance till today: ")
+            attendance_manager.calculate_attendance_till_current_date(student_name)
+
         elif choice == "7":
             student_name = input("Enter the student name to generate the academic report: ")
             academic_report_generator.generate_academic_report(student_name)
