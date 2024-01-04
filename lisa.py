@@ -1,7 +1,9 @@
+import matplotlib.pyplot as plt
+from datetime import datetime
+
 class StudentManagement:
     @staticmethod
     def email_exists(email):
-       
         return False
 
 class Login:
@@ -10,8 +12,8 @@ class Login:
             self.username = username
             self.password = password
             self.field = field
-            self.subjects = []  
-            self.online_lectures = []  
+            self.subjects = []
+            self.online_lectures = []
             self.attendance_data = []
 
 class LoginSystem:
@@ -20,16 +22,14 @@ class LoginSystem:
 
     def register_user(self):
         email = input("Enter your email: ")
-        
-        
+
         if any(user.username == email.split('@')[0] for user in self.users):
             print("Email already exists. Please use a different email.")
             return
-        
+
         password = input("Enter a password: ")
         username = email.split('@')[0]
 
-        # Allow the user to select a field during registration
         print("Select your field:")
         print("1. BTech CSE")
         print("2. Electrical Engineering")
@@ -45,7 +45,6 @@ class LoginSystem:
         fields = ['BTech CSE', 'Electrical Engineering', 'Civil Engineering', 'Mechanical Engineering']
         selected_field = fields[int(field_choice) - 1]
 
-        # Add subjects based on the selected field
         if selected_field == 'BTech CSE':
             subjects = ['Programming', 'Data Structures', 'Algorithms', 'Database Management']
         elif selected_field == 'Electrical Engineering':
@@ -55,7 +54,7 @@ class LoginSystem:
         elif selected_field == 'Mechanical Engineering':
             subjects = ['Thermodynamics', 'Mechanics of Materials', 'Fluid Mechanics', 'Machine Design']
         else:
-            subjects = []  
+            subjects = []
 
         new_user = Login.User(username, password, selected_field)
         new_user.subjects = subjects
@@ -66,9 +65,9 @@ class LoginSystem:
     def login(self):
         email = input("Enter your email: ")
         password = input("Enter your password: ")
-        
+
         username = email.split('@')[0]
-        
+
         user = next((user for user in self.users if user.username == username and user.password == password), None)
 
         if user:
@@ -88,9 +87,10 @@ class LoginSystem:
             print("4. Mark Attendance")
             print("5. View Attendance Data")
             print("6. Logout")
+            print("7. Plot Attendance Graph")
 
-            choice = input("Enter your choice (1-6): ")
-            
+            choice = input("Enter your choice (1-7): ")
+
             if choice == '1':
                 self.view_profile(user)
             elif choice == '2':
@@ -104,22 +104,22 @@ class LoginSystem:
             elif choice == '6':
                 print("Logout successful.")
                 break
+            elif choice == '7':
+                self.plot_attendance_graph(user)
             else:
-                print("Invalid choice. Please enter a number between 1 and 6.")
+                print("Invalid choice. Please enter a number between 1 and 7.")
 
     def view_profile(self, user):
         print(f"\nProfile for {user.username}:")
         print(f"Field: {user.field}")
 
-
     def view_subjects(self, user):
         print(f"\nSubjects for {user.username} in {user.field}:")
         for subject in user.subjects:
             print(subject)
-    
+
     def view_online_lectures(self, user):
         print(f"\nOnline Lectures for {user.username} in {user.field}:")
-
 
         schedule = [
             {'Time': '10:30 AM - 12:00 PM', 'Subject': 'Programming'},
@@ -147,25 +147,63 @@ class LoginSystem:
             return
 
         date = input("Enter the date (YYYY-MM-DD): ")
-        attendance_status = input("Attendance (Present/Absent): ")
 
-        user.attendance_data.append({
-            'Date': date,
-            'Subject': selected_subject,
-            'Status': attendance_status,
-        })
-
-        print(f"Attendance marked for {selected_subject} on {date}.")
+        # Check if attendance has already been marked for the selected lecture on the given date
+        if any(record['Subject'] == selected_subject and record['Date'] == date for record in user.attendance_data):
+            print(f"Attendance for {selected_subject} on {date} has already been marked.")
+        else:
+            attendance_status = input("Attendance (Present/Absent): ")
+            user.attendance_data.append({
+                'Date': date,
+                'Subject': selected_subject,
+                'Status': attendance_status,
+            })
+            print(f"Attendance marked for {selected_subject} on {date}.")
 
     def view_attendance_data(self, user):
         print("\nAttendance Data:")
         for attendance_record in user.attendance_data:
             print(f"Date: {attendance_record['Date']}, Subject: {attendance_record['Subject']}, Status: {attendance_record['Status']}")
 
+    def plot_attendance_graph(self, user):
+        if not user.attendance_data:
+            print("No attendance data available to plot.")
+            return
 
-# login_system = LoginSystem()
+        subjects = set(record['Subject'] for record in user.attendance_data)
+        dates = sorted(set(record['Date'] for record in user.attendance_data))
+        
+        # Create a dictionary to store attendance counts for each subject on each date
+        attendance_counts = {subject: [0] * len(dates) for subject in subjects}
 
-# login_system.register_user()
+        # Fill in the attendance counts
+        for record in user.attendance_data:
+            subject = record['Subject']
+            date = record['Date']
+            index = dates.index(date)
+            attendance_counts[subject][index] += 1
+
+        # Plotting the attendance graph
+        plt.figure(figsize=(10, 6))
+        for subject in subjects:
+            plt.plot(dates, attendance_counts[subject], label=subject, marker='o')
+
+        plt.title(f"Attendance Graph for {user.username}")
+        plt.xlabel("Date")
+        plt.ylabel("Attendance Count")
+        plt.xticks(rotation=45)
+        plt.legend()
+        plt.tight_layout()
+
+        # Show the plot
+        plt.show()
 
 
-# login_system.login()
+login_system = LoginSystem()
+
+login_system.register_user()
+
+login_system.login()
+
+# Uncomment the line below to test plotting the attendance graph
+# login_system.plot_attendance_graph(login_system.users[0])
