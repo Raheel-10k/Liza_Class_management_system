@@ -2,7 +2,7 @@ from Class_managment.student_management import StudentManagement
 from Class_managment.attendance_management import AttendanceManagement
 from Class_managment.academic_report import AcademicReport
 from Class_managment.course_management import CourseManagement
-from Class_managment.lisa import LoginSystem
+from Class_management.lisa import LoginSystem
 
 def display_menu():
     print("\nSelect a Task:")
@@ -36,8 +36,28 @@ if __name__ == "__main__":
             else:
                 print(f"Student {student_name} not found.")
         elif choice == "3":
-            # Implement eligibility criteria logic
-            pass
+            
+            student_name = input("Enter the student name to check eligibility criteria: ")
+            student = student_manager.get_student_by_name(student_name)
+
+            if student:
+                physics_marks = float(input(f"Enter {student_name}'s marks in Physics: "))
+                chemistry_marks = float(input(f"Enter {student_name}'s marks in Chemistry: "))
+                math_marks = float(input(f"Enter {student_name}'s marks in Math: "))
+
+                percentage = (physics_marks + chemistry_marks + math_marks) / 3
+
+                if percentage >= 50:
+                    print(f"{student_name} is eligible with {percentage}%.")
+                else:
+                    print(f"{student_name} is not eligible. Minimum 50% required, but has {percentage}%.")
+            else:
+                register_choice = input(f"Student {student_name} not found. Do you want to register? (yes/no): ").lower()
+                if register_choice == "yes":
+                    login_system.register_user()
+                else:
+                    print("Returning to the main menu.")
+
         elif choice == "4":
             student_name = input("Enter the student name to select a specialization: ")
             student = student_manager.get_student_by_name(student_name)
