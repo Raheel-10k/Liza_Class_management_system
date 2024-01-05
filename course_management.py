@@ -1,5 +1,5 @@
 class CourseManagement:
-    def _init_(self, student_manager):
+    def __init__(self, student_manager):
         self.student_manager = student_manager
         self.specialization_options = {
             'BTech CSE': ['Machine Learning', 'Network Security', 'Data Science'],
