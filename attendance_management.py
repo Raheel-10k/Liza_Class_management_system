@@ -1,5 +1,5 @@
 class AttendanceManagement:
-    def _init_(self, student_data):
+    def __init__(self, student_data):
         self.student_data = student_data
 
     def calculate_attendance(self, student_name):
