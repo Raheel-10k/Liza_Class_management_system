@@ -1,7 +1,7 @@
 import random
 
 class StudentManagement:
-    def _init_(self):
+    def __init__(self):
         self.student_data = []
 
     def get_student_by_name(self, student_name):
@@ -47,7 +47,7 @@ class StudentManagement:
 
 
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     student_manager = StudentManagement()
 
     # while block can be directly implemented in the main.py file, else use different logic for same task
