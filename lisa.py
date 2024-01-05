@@ -1,5 +1,5 @@
 class StudentManagement:
-    def _init_(self):
+    def __init__(self):
         self.student_data = [
             {'uid': 1232, 'std_name': 'john doe', 'email': 'example@gmail.com', 'course_selected': 'BTech CSE',
              'passing_year': 2027, 'starting_year': 2023, 'current_year': 2023},
@@ -51,7 +51,7 @@ class StudentManagement:
 
 
 class LoginSystem:
-    def _init_(self, student_manager):
+    def __init__(self, student_manager):
         self.users = []
         self.student_manager = student_manager
 
