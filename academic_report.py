@@ -1,5 +1,5 @@
 class AcademicReport:
-    def __init__(self, student_data):
+    def _init_(self, student_data):
         self.student_data = student_data
 
     def generate_academic_report(self, student_name):
@@ -17,7 +17,6 @@ class AcademicReport:
             print(f"Student {student_name} not found.")
 
     def evaluate_academic_performance(self, attendance_percentage, marks_obtained):
-        # Change ASK H
         if attendance_percentage >= 80 and marks_obtained >= 70:
             return "Excellent"
         elif attendance_percentage >= 70 and marks_obtained >= 60:

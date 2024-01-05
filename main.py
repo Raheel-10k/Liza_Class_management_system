@@ -1,8 +1,8 @@
-from Class_managment.student_management import StudentManagement
-from Class_managment.attendance_management import AttendanceManagement
-from Class_managment.academic_report import AcademicReport
-from Class_managment.course_management import CourseManagement
-from Class_management.lisa import LoginSystem
+from student_management import StudentManagement
+from attendance_management import AttendanceManagement
+from academic_report import AcademicReport
+from course_management import CourseManagement
+from lisa import LoginSystem
 
 def display_menu():
     print("\nSelect a Task:")
@@ -15,12 +15,12 @@ def display_menu():
     print("7. Get Your Academic Report")
     print("8. Exit")
 
-if __name__ == "__main__":
+if _name_ == "_main_":
     student_manager = StudentManagement()
     attendance_manager = AttendanceManagement(student_manager.student_data)
     academic_report_generator = AcademicReport(student_manager.student_data)
     course_manager = CourseManagement(student_manager)
-    login_system = LoginSystem()
+    login_system = LoginSystem(student_manager)
 
     while True:
         display_menu()

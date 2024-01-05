@@ -1,29 +1,64 @@
-import matplotlib.pyplot as plt
-from datetime import datetime
-
 class StudentManagement:
-    @staticmethod
-    def email_exists(email):
-        return False
+    def _init_(self):
+        self.student_data = [
+            {'uid': 1232, 'std_name': 'john doe', 'email': 'example@gmail.com', 'course_selected': 'BTech CSE',
+             'passing_year': 2027, 'starting_year': 2023, 'current_year': 2023},
+            {'uid': 1215, 'std_name': 'jane doe', 'email': 'example1@gmail.com', 'course_selected': 'BTech CSE',
+             'passing_year': 2027, 'starting_year': 2023, 'current_year': 2026}
+        ]
 
-class Login:
-    class User:
-        def __init__(self, username, password, field):
-            self.username = username
-            self.password = password
-            self.field = field
-            self.subjects = []
-            self.online_lectures = []
-            self.attendance_data = []
+    def get_student_by_name(self, student_name):
+        for student in self.student_data:
+            if student['std_name'].lower() == student_name.lower():
+                return student
+        return None
+
+    def add_new_student(self, student_name, email, course_selected, starting_year, current_year, passing_year):
+        unique_id = self.generate_unique_id()
+
+        new_student = {
+            'uid': unique_id,
+            'std_name': student_name,
+            'email': email,
+            'course_selected': course_selected,
+            'passing_year': passing_year,
+            'starting_year': starting_year,
+            'current_year': current_year
+        }
+
+        self.student_data.append(new_student)
+        print(f"New student {student_name} added successfully.")
+
+    def delete_student(self, uid, student_name):
+        confirmation_uid = int(input("To confirm deletion, re-enter the UID: "))
+        if confirmation_uid == uid:
+            for student in self.student_data:
+                if student['uid'] == uid and student['std_name'].lower() == student_name.lower():
+                    self.student_data.remove(student)
+                    print(f"Student {student_name} with UID {uid} deleted successfully.")
+                    break
+            else:
+                print("Student not found. Deletion unsuccessful.")
+        else:
+            print("UID confirmation failed. Deletion unsuccessful.")
+
+    def generate_unique_id(self):
+        import random
+        while True:
+            unique_id = random.randint(1000, 9999)
+            if all(student['uid'] != unique_id for student in self.student_data):
+                return unique_id
+
 
 class LoginSystem:
-    def __init__(self):
+    def _init_(self, student_manager):
         self.users = []
+        self.student_manager = student_manager
 
     def register_user(self):
         email = input("Enter your email: ")
 
-        if any(user.username == email.split('@')[0] for user in self.users):
+        if any(user['email'] == email for user in self.student_manager.student_data):
             print("Email already exists. Please use a different email.")
             return
 
@@ -56,9 +91,24 @@ class LoginSystem:
         else:
             subjects = []
 
-        new_user = Login.User(username, password, selected_field)
-        new_user.subjects = subjects
+        starting_year = int(input("Enter starting year: "))
+        current_year = int(input("Enter current year: "))
+        passing_year = int(input("Enter passing year: "))
+
+        new_user = {
+            'username': username,
+            'password': password,
+            'field': selected_field,
+            'subjects': subjects,
+            'online_lectures': [],
+            'attendance_data': [],
+            'starting_year': starting_year,
+            'current_year': current_year,
+            'passing_year': passing_year
+        }
+
         self.users.append(new_user)
+        self.student_manager.add_new_student(username, email, selected_field, starting_year, current_year, passing_year)
         print(f"User {username} registered successfully with the field: {selected_field}.")
         self.show_user_options(new_user)
 
@@ -68,7 +118,7 @@ class LoginSystem:
 
         username = email.split('@')[0]
 
-        user = next((user for user in self.users if user.username == username and user.password == password), None)
+        user = next((user for user in self.users if user['username'] == username and user['password'] == password), None)
 
         if user:
             print(f"Welcome, {username}! Login successful.")
@@ -87,9 +137,8 @@ class LoginSystem:
             print("4. Mark Attendance")
             print("5. View Attendance Data")
             print("6. Logout")
-            print("7. Plot Attendance Graph")
 
-            choice = input("Enter your choice (1-7): ")
+            choice = input("Enter your choice (1-6): ")
 
             if choice == '1':
                 self.view_profile(user)
@@ -104,22 +153,20 @@ class LoginSystem:
             elif choice == '6':
                 print("Logout successful.")
                 break
-            elif choice == '7':
-                self.plot_attendance_graph(user)
             else:
-                print("Invalid choice. Please enter a number between 1 and 7.")
+                print("Invalid choice. Please enter a number between 1 and 6.")
 
     def view_profile(self, user):
-        print(f"\nProfile for {user.username}:")
-        print(f"Field: {user.field}")
+        print(f"\nProfile for {user['username']}:")
+        print(f"Field: {user['field']}")
 
     def view_subjects(self, user):
-        print(f"\nSubjects for {user.username} in {user.field}:")
-        for subject in user.subjects:
+        print(f"\nSubjects for {user['username']} in {user['field']}:")
+        for subject in user['subjects']:
             print(subject)
 
     def view_online_lectures(self, user):
-        print(f"\nOnline Lectures for {user.username} in {user.field}:")
+        print(f"\nOnline Lectures for {user['username']} in {user['field']}:")
 
         schedule = [
             {'Time': '10:30 AM - 12:00 PM', 'Subject': 'Programming'},
@@ -134,26 +181,25 @@ class LoginSystem:
     def mark_attendance(self, user):
         print("\nMark Attendance:")
         print("Select the class to mark attendance:")
-        for index, subject in enumerate(user.subjects, start=1):
+        for index, subject in enumerate(user['subjects'], start=1):
             print(f"{index}. {subject}")
 
         subject_choice = input("Enter the number corresponding to the class (1-4): ")
 
         try:
             subject_index = int(subject_choice) - 1
-            selected_subject = user.subjects[subject_index]
+            selected_subject = user['subjects'][subject_index]
         except (ValueError, IndexError):
             print("Invalid choice. Please choose a valid class.")
             return
 
         date = input("Enter the date (YYYY-MM-DD): ")
 
-        # Check if attendance has already been marked for the selected lecture on the given date
-        if any(record['Subject'] == selected_subject and record['Date'] == date for record in user.attendance_data):
+        if any(record['Subject'] == selected_subject and record['Date'] == date for record in user['attendance_data']):
             print(f"Attendance for {selected_subject} on {date} has already been marked.")
         else:
             attendance_status = input("Attendance (Present/Absent): ")
-            user.attendance_data.append({
+            user['attendance_data'].append({
                 'Date': date,
                 'Subject': selected_subject,
                 'Status': attendance_status,
@@ -162,48 +208,31 @@ class LoginSystem:
 
     def view_attendance_data(self, user):
         print("\nAttendance Data:")
-        for attendance_record in user.attendance_data:
+        for attendance_record in user['attendance_data']:
             print(f"Date: {attendance_record['Date']}, Subject: {attendance_record['Subject']}, Status: {attendance_record['Status']}")
 
-    def plot_attendance_graph(self, user):
-        if not user.attendance_data:
-            print("No attendance data available to plot.")
-            return
 
-        subjects = set(record['Subject'] for record in user.attendance_data)
-        dates = sorted(set(record['Date'] for record in user.attendance_data))
-        
-        # Create a dictionary to store attendance counts for each subject on each date
-        attendance_counts = {subject: [0] * len(dates) for subject in subjects}
+if _name_ == "_main_":
+    from student_management import StudentManagement
 
-        # Fill in the attendance counts
-        for record in user.attendance_data:
-            subject = record['Subject']
-            date = record['Date']
-            index = dates.index(date)
-            attendance_counts[subject][index] += 1
+    student_manager = StudentManagement()
+    login_system = LoginSystem(student_manager)
 
-        # Plotting the attendance graph
-        plt.figure(figsize=(10, 6))
-        for subject in subjects:
-            plt.plot(dates, attendance_counts[subject], label=subject, marker='o')
+    while True:
+        print("\nMain Menu:")
+        print("1. Register")
+        print("2. Login")
+        print("3. Exit")
 
-        plt.title(f"Attendance Graph for {user.username}")
-        plt.xlabel("Date")
-        plt.ylabel("Attendance Count")
-        plt.xticks(rotation=45)
-        plt.legend()
-        plt.tight_layout()
+        main_choice = input("Enter your choice (1-3): ")
 
-        # Show the plot
-        plt.show()
-
-
-login_system = LoginSystem()
-
-login_system.register_user()
-
-login_system.login()
-
-# Uncomment the line below to test plotting the attendance graph
-# login_system.plot_attendance_graph(login_system.users[0])
+        if main_choice == '1':
+            login_system.register_user()
+        elif main_choice == '2':
+            if login_system.login():
+                break
+        elif main_choice == '3':
+            print("Exiting the program. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please enter a number between 1 and 3.")

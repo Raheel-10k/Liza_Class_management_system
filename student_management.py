@@ -1,13 +1,8 @@
 import random
 
 class StudentManagement:
-    def __init__(self):
-        self.student_data = [
-            {'uid': 1232, 'std_name': 'john doe', 'email': 'example@gmail.com', 'course_selected': 'BTech CSE',
-             'passing_year': 2027, 'starting_year': 2023, 'current_year': 2023},
-            {'uid': 1215, 'std_name': 'jane doe', 'email': 'example1@gmail.com', 'course_selected': 'BTech CSE',
-             'passing_year': 2027, 'starting_year': 2023, 'current_year': 2026}
-        ]
+    def _init_(self):
+        self.student_data = []
 
     def get_student_by_name(self, student_name):
         for student in self.student_data:
@@ -15,20 +10,8 @@ class StudentManagement:
                 return student
         return None
 
-    def add_new_student(self, student_name):
+    def add_new_student(self, student_name, email, course_selected, passing_year, starting_year, current_year):
         unique_id = self.generate_unique_id()
-        email = input("Enter student email: ")
-        allowed_courses = ['BTech CSE', 'Civil Engineering', 'Mechanical Engineering', 'Electrical Engineering']
-        while True:
-            course_selected = input(f"Enter course selected ({', '.join(allowed_courses)}): ")
-            if course_selected in allowed_courses:
-                break
-            else:
-                print("Invalid course selection. Please choose from the allowed courses.")
-
-        passing_year = int(input("Enter passing year: "))
-        starting_year = int(input("Enter starting year: "))
-        current_year = int(input("Enter current year: "))
 
         new_student = {
             'uid': unique_id,
@@ -63,7 +46,8 @@ class StudentManagement:
                 return unique_id
 
 
-if __name__ == "__main__":
+
+if _name_ == "_main_":
     student_manager = StudentManagement()
 
     # while block can be directly implemented in the main.py file, else use different logic for same task

@@ -1,12 +1,12 @@
 class CourseManagement:
-    def __init__(self, student_manager):
+    def _init_(self, student_manager):
         self.student_manager = student_manager
         self.specialization_options = {
             'BTech CSE': ['Machine Learning', 'Network Security', 'Data Science'],
             'Electrical Engineering': ['Control systems', 'Communication and Signal Processing System', 'Power Systems'],
             'Mechanical Engineering': ['Biomedical and Engineering Fluid Mechanics', 'Combustion and the Environment', 'Mechanical Design'],
             'Civil Engineering': ['Materials Engineering', 'Construction Engineering', 'Transportation Engineering', 'Structural Engineering', 'Geotechnical Engineering']
-            #Dusre course Daalne h if wanted.
+
         }
 
     def select_specialization(self, student):
@@ -24,4 +24,3 @@ class CourseManagement:
                     break
                 else:
                     print(f"Invalid specialization. Please select from the available options.")
-

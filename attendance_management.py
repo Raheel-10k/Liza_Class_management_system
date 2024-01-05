@@ -1,5 +1,5 @@
 class AttendanceManagement:
-    def __init__(self, student_data):
+    def _init_(self, student_data):
         self.student_data = student_data
 
     def calculate_attendance(self, student_name):
@@ -60,7 +60,7 @@ class AttendanceManagement:
             print(f"Student {student_name} not found.")
 
 
-if __name__ == "__main__":
+if _name_ == "_main_":
     from student_management import StudentManagement
 
     student_manager = StudentManagement()
