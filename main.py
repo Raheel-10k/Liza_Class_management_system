@@ -15,7 +15,7 @@ def display_menu():
     print("7. Get Your Academic Report")
     print("8. Exit")
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     student_manager = StudentManagement()
     attendance_manager = AttendanceManagement(student_manager.student_data)
     academic_report_generator = AcademicReport(student_manager.student_data)
