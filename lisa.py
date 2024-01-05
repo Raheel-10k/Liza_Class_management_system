@@ -212,7 +212,7 @@ class LoginSystem:
             print(f"Date: {attendance_record['Date']}, Subject: {attendance_record['Subject']}, Status: {attendance_record['Status']}")
 
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     from student_management import StudentManagement
 
     student_manager = StudentManagement()
